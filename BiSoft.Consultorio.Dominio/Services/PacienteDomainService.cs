@@ -3,6 +3,7 @@ using BiSoft.Consultorio.Dominio.Repositories;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 
 
@@ -25,12 +26,15 @@ namespace BiSoft.Consultorio.Dominio.Services
             _logger.LogInformation("Paciente registrado: {PacienteNombre}", paciente.Nombre);
             return paciente;
         }
-        public async Task<Paciente> ActualizarPaciente(Guid pacienteId, string nombre)
+        public async Task<Paciente> ActualizarPaciente(
+            Guid pacienteId,
+            string nombre,
+            string condicion)
         {
             var paciente = await ObtenerPaciente(pacienteId);
-            paciente.Actualizar(nombre);
+            paciente.Actualizar(nombre, condicion);
             await _pacienteRepository.GuardarCambios();
-            _logger.LogInformation("Paciente actualizado: {PacienteNombre}", paciente.Nombre);
+            _logger.LogInformation("Pacientes actualizado: {DoctorNombre}, Condicion: {DoctorEspecialidad}", paciente.Nombre, paciente.Condicion);
             return paciente;
         }
         public async Task<Paciente> ObtenerPaciente(Guid pacienteId)
@@ -45,4 +49,5 @@ namespace BiSoft.Consultorio.Dominio.Services
             _logger.LogInformation("Consulta de pacientes realizada.");
             return pacientes;
         }
+    }
 }

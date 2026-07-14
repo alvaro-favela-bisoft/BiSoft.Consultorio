@@ -1,7 +1,5 @@
 ﻿using BiSoft.Consultorio.Dominio.Entidades.Base;
-using BiSoft.Consultorio.Dominio.Validators;
 using BiSoft.Consultorio.Dominio.Validators.Entidades;
-using System;
 
 
 namespace BiSoft.Consultorio.Dominio.Entidades

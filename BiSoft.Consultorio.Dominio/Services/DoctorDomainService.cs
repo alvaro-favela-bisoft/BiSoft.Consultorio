@@ -24,7 +24,10 @@ namespace BiSoft.Consultorio.Dominio.Services
             _logger.LogInformation("Doctor registrado: {DoctorNombre}, Especialidad: {DoctorEspecialidad}", doctor.Nombre, doctor.Especialidad);
             return doctor;
         }
-        public async Task<Doctor> ActualizarDoctor(Guid doctorId, string nombre, string especialidad)
+        public async Task<Doctor> ActualizarDoctor(
+            Guid doctorId, 
+            string nombre, 
+            string especialidad)
         {
             var doctor = await ObtenerDoctor(doctorId);
             doctor.Actualizar(nombre, especialidad);

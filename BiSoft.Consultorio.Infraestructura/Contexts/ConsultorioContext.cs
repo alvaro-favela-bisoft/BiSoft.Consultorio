@@ -14,6 +14,7 @@ namespace BiSoft.Consultorio.Infraestructura.Contexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new DoctorSqliteConfiguration());
+            modelBuilder.ApplyConfiguration(new PacienteSqliteConfiguration());
             base.OnModelCreating(modelBuilder);
         }
     }

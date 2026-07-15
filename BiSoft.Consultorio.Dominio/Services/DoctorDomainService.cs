@@ -2,6 +2,7 @@
 using BiSoft.Consultorio.Dominio.Repositories;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -37,7 +38,7 @@ namespace BiSoft.Consultorio.Dominio.Services
         }
         public async Task<Doctor> ObtenerDoctor(Guid doctorId)
         {
-            var doctor = await _doctorRepository.ObtenerDoctor(doctorId) ?? throw new Exception($"No se encontro el doctor con id {doctorId}");
+            var doctor = await _doctorRepository.ObtenerDoctor(doctorId) ?? throw new KeyNotFoundException($"No se encontro el doctor con id {doctorId}");
             _logger.LogInformation("Doctor obtenido: {DoctorNombre}, Especialidad: {DoctorEspecialidad}", doctor.Nombre, doctor.Especialidad);
             return doctor;
         }
@@ -46,6 +47,13 @@ namespace BiSoft.Consultorio.Dominio.Services
             var doctores = _doctorRepository.ConsultarDoctor();
             _logger.LogInformation("Consulta de doctores realizada.");
             return doctores;
+        }
+        public async Task EliminarDoctor(Guid doctorId)
+        {
+            var doctor = await ObtenerDoctor(doctorId);
+            await _doctorRepository.EliminarDoctor(doctor);
+            await _doctorRepository.GuardarCambios();
+            _logger.LogInformation("Doctor eliminado: {DoctorId}", doctorId);
         }
     }
 }

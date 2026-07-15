@@ -1,5 +1,6 @@
 ﻿using BiSoft.Consultorio.Aplicacion.DTOs.Doctor;
 using BiSoft.Consultorio.Dominio.Services;
+using Mapster;
 using Microsoft.Extensions.Logging;
 
 namespace BiSoft.Consultorio.Aplicacion.Services
@@ -25,6 +26,22 @@ namespace BiSoft.Consultorio.Aplicacion.Services
                 .RegistrarPaciente(nombre, condicion);
 
             return paciente.Adapt<RegistrarPacienteResponse>();
+        }
+        public async Task<ConsultarPacienteResponse> ConsultarPaciente(Guid pacienteId)
+        {
+            var paciente = await _pacienteDomainService.ObtenerPaciente(pacienteId);
+            return paciente.Adapt<ConsultarPacienteResponse>();
+        }
+
+        public async Task<RegistrarPacienteResponse> ActualizarPaciente(Guid pacienteId, string nombre, string condicion)
+        {
+            var paciente = await _pacienteDomainService.ActualizarPaciente(pacienteId, nombre, condicion);
+            return paciente.Adapt<RegistrarPacienteResponse>();
+        }
+
+        public async Task EliminarPaciente(Guid pacienteId)
+        {
+            await _pacienteDomainService.EliminarPaciente(pacienteId);
         }
     }
 }

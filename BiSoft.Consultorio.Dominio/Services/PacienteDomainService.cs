@@ -3,7 +3,6 @@ using BiSoft.Consultorio.Dominio.Repositories;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
-using System.Numerics;
 using System.Threading.Tasks;
 
 
@@ -48,6 +47,13 @@ namespace BiSoft.Consultorio.Dominio.Services
             var pacientes = _pacienteRepository.ConsultarPaciente();
             _logger.LogInformation("Consulta de pacientes realizada.");
             return pacientes;
+        }
+        public async Task EliminarPaciente(Guid pacienteId)
+        {
+            var paciente = await ObtenerPaciente(pacienteId);
+            await _pacienteRepository.EliminarPaciente(paciente);
+            await _pacienteRepository.GuardarCambios();
+            _logger.LogInformation("Paciente eliminado: {PacienteId}", pacienteId);
         }
     }
 }

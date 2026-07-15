@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BiSoft.Consultorio.Dominio.Repositories
@@ -13,5 +12,6 @@ namespace BiSoft.Consultorio.Dominio.Repositories
         Task GuardarCambios();
         Task<Paciente?> ObtenerPaciente(Guid pacienteId);
         IQueryable<Paciente?> ConsultarPaciente();
+        Task EliminarPaciente(Paciente paciente);
     }
 }

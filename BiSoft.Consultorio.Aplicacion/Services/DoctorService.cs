@@ -30,10 +30,10 @@ namespace BiSoft.Consultorio.Aplicacion.Services
 
             return doctor.Adapt<ConsultarDoctorResponse>();
         }
-        public async Task<RegistrarDoctorResponse> ActualizarDoctor(Guid doctorId, string nombre, string especialidad)
+        public async Task<ActualizarDoctorResponse> ActualizarDoctor(Guid doctorId, string nombre, string especialidad)
         {
             var doctor = await _doctorDomainService.ActualizarDoctor(doctorId, nombre, especialidad);
-            return doctor.Adapt<RegistrarDoctorResponse>();
+            return doctor.Adapt<ActualizarDoctorResponse>();
         }
         public async Task EliminarDoctor(Guid doctorId)
         {

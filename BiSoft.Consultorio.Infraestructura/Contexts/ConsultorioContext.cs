@@ -17,5 +17,7 @@ namespace BiSoft.Consultorio.Infraestructura.Contexts
             modelBuilder.ApplyConfiguration(new PacienteSqliteConfiguration());
             base.OnModelCreating(modelBuilder);
         }
+        public DbSet<Cita> Citas { get; set; }
+        public DbSet<Sala> Salas { get; set; }
     }
 }

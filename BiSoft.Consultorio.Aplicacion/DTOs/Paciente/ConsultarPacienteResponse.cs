@@ -1,6 +1,6 @@
 using System;
 
-namespace BiSoft.Consultorio.Aplicacion.DTOs.Doctor
+namespace BiSoft.Consultorio.Aplicacion.DTOs.Paciente
 {
     public class ConsultarPacienteResponse
     {

@@ -1,6 +1,6 @@
-namespace Bisoft.Consultorio.Api.DTOs
+﻿namespace Bisoft.Consultorio.Api.DTOs.Paciente
 {
-    public class RegistrarPacienteRequest
+    public class ActualizarPacienteRequest
     {
         public string Nombre { get; set; } = string.Empty;
         public string Condicion { get; set; } = string.Empty;

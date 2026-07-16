@@ -1,4 +1,4 @@
-﻿using BiSoft.Consultorio.Aplicacion.DTOs.Doctor;
+﻿using BiSoft.Consultorio.Aplicacion.DTOs.Paciente;
 using BiSoft.Consultorio.Dominio.Services;
 using Mapster;
 using Microsoft.Extensions.Logging;

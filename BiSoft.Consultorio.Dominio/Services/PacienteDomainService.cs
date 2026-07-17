@@ -2,6 +2,7 @@
 using BiSoft.Consultorio.Dominio.Repositories;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -54,6 +55,16 @@ namespace BiSoft.Consultorio.Dominio.Services
             await _pacienteRepository.EliminarPaciente(paciente);
             await _pacienteRepository.GuardarCambios();
             _logger.LogInformation("Paciente eliminado: {PacienteId}", pacienteId);
+        }
+        public async Task RestaurarPaciente(Guid pacienteId)
+        {
+            var pacientesEliminados = await _pacienteRepository.ObtenerPacientesEliminados();
+            var paciente = pacientesEliminados.FirstOrDefault(p => p.Id == pacienteId)
+                ?? throw new KeyNotFoundException($"No se encontró paciente eliminado con id {pacienteId}");
+
+            await _pacienteRepository.RestaurarPaciente(paciente);
+            await _pacienteRepository.GuardarCambios();
+            _logger.LogInformation("Paciente restaurado: {PacienteId}", pacienteId);
         }
     }
 }

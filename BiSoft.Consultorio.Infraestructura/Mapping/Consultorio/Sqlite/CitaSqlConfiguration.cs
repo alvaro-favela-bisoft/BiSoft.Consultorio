@@ -26,6 +26,20 @@ namespace BiSoft.Consultorio.Infraestructura.Mapping.Consultorio.Sqlite
                 .WithMany()
                 .HasForeignKey(c => c.SalaId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // SOFT DELETE
+            builder.Property(c => c.IsDeleted)
+                .HasColumnName("IsDeleted")
+                .HasColumnType("INTEGER")
+                .HasDefaultValue(false)
+                .IsRequired();
+
+            builder.Property(c => c.DeletedAt)
+                .HasColumnName("DeletedAt")
+                .HasColumnType("TEXT");
+
+            // FILTRO GLOBAL (excluir eliminados)
+            builder.HasQueryFilter(c => !c.IsDeleted);
         }
     }
 }

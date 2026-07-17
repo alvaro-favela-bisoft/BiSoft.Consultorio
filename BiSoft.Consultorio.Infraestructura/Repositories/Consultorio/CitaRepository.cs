@@ -48,7 +48,13 @@ namespace BiSoft.Consultorio.Infraestructura.Repositories.Consultorio
                 .Where(c => c.DoctorId == doctorId && c.Fecha >= fechaInicio && c.Fecha < fechaFin)
                 .ToListAsync();
         }
-
+        public async Task<List<Cita>> ObtenerCitasEliminadas()
+        {
+            return await _context.Citas
+                .IgnoreQueryFilters()
+                .Where(c => c.IsDeleted)
+                .ToListAsync();
+        }
         public Task ActualizarCita(Cita cita)
         {
             _context.Citas.Update(cita);
@@ -57,10 +63,16 @@ namespace BiSoft.Consultorio.Infraestructura.Repositories.Consultorio
 
         public Task EliminarCita(Cita cita)
         {
-            _context.Citas.Remove(cita);
+            cita.Eliminar();
+            _context.Citas.Update(cita);
             return Task.CompletedTask;
         }
-
+        public Task RestaurarCita(Cita cita)
+        {
+            cita.Restaurar();
+            _context.Citas.Update(cita);
+            return Task.CompletedTask;
+        }
         public Task GuardarCambios()
         {
             return _context.SaveChangesAsync();

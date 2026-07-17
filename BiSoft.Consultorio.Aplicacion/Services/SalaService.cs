@@ -38,5 +38,10 @@ namespace BiSoft.Consultorio.Aplicacion.Services
         {
             await _salaDomainService.EliminarSala(salaId);
         }
+
+        public async Task<object?> RestaurarSala(Guid id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

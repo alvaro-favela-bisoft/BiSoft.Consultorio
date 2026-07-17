@@ -10,8 +10,10 @@ namespace BiSoft.Consultorio.Dominio.Repositories
     {
         Task RegistrarSala(Sala sala);
         Task<Sala?> ObtenerSala(Guid salaId);
+        Task<List<Sala>> ObtenerSalasEliminadas();
         Task ActualizarSala(Sala sala);
         Task EliminarSala(Sala sala);
+        Task RestaurarSala(Sala sala);
         Task GuardarCambios();
     }
 }

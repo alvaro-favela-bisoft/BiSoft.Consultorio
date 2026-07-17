@@ -9,9 +9,11 @@ namespace BiSoft.Consultorio.Dominio.Repositories
     public interface IPacienteRepository
     {
         Task RegistrarPaciente(Paciente paciente);
-        Task GuardarCambios();
         Task<Paciente?> ObtenerPaciente(Guid pacienteId);
-        IQueryable<Paciente?> ConsultarPaciente();
+        Task<List<Paciente>> ObtenerPacientesEliminados();
         Task EliminarPaciente(Paciente paciente);
+        Task RestaurarPaciente(Paciente paciente);
+        Task GuardarCambios();
+        IQueryable<Paciente> ConsultarPaciente();
     }
 }

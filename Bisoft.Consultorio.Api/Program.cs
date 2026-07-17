@@ -12,44 +12,41 @@ using Serilog;
 
 namespace Bisoft.Consultorio.Api
 {
-    public class Program
+    public static class Program
     {
+        public const string RATE_LIMITER_POLICY_NAME = "fixed"; 
+        public const string CORS_POLICY_NAME = "AllowAll";
+    
         public static void Main(string[] args)
         {
             try
             {
                 var builder = WebApplication.CreateBuilder(args);
-                var conncectionStrings = builder.Configuration["DatabaseConnections:Consultorio:ConnectionStrings"];
+                var connectionString = builder.Configuration["DatabaseConnections:Consultorio:ConnectionStrings"];
+                if (string.IsNullOrWhiteSpace(connectionString))
 
-                // ========== REGISTRAR SERVICIOS (ANTES DE builder.Build()) ==========
+                {
 
-                // Doctores
-                builder.Services.AddScoped<DoctorService>();
-                builder.Services.AddScoped<DoctorDomainService>();
-                builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
+                    throw new InvalidOperationException("SQLite connection string is not configured. Check appsettings.json for DatabaseConnections:Consultorio:ConnectionString.");
 
-                // Pacientes
-                builder.Services.AddScoped<PacienteService>();
-                builder.Services.AddScoped<PacienteDomainService>();
-                builder.Services.AddScoped<IPacienteRepository, PacienteRepository>();
+                }
+                builder.Services.InyectarServicios()
+                       .InyectarContextos(connectionString)
+                       .ConfigurarSwagger()
+                       .ConfigurarCors()
+                       .ConfugurarHealthChecks(connectionString);
 
-                // Salas
-                builder.Services.AddScoped<SalaService>();
-                builder.Services.AddScoped<SalaDomainService>();
-                builder.Services.AddScoped<ISalaRepository, SalaRepository>();
+                // ====================
 
-                // Citas
-                builder.Services.AddScoped<CitaService>();
-                builder.Services.AddScoped<CitaDomainService>();
-                builder.Services.AddScoped<ICitaRepository, CitaRepository>();
 
                 // DbContext
                 builder.Services.AddDbContext<ConsultorioContext>(
-                    options => options.UseSqlite(conncectionStrings)
+                    options => options.UseSqlite(connectionString)
                 );
 
                 // Logging
                 Log.Logger = new LoggerConfiguration()
+                    .MinimumLevel.Debug()
                     .WriteTo.SQLite(
                         sqliteDbPath: "Logs/Logs.db",
                         tableName: "Logs",
@@ -61,27 +58,14 @@ namespace Bisoft.Consultorio.Api
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen();
 
-                // CORS
-                builder.Services.AddCors(options =>
-                {
-                    options.AddPolicy("AllowAll",
-                        builder =>
-                        {
-                            builder.AllowAnyOrigin()
-                                .AllowAnyMethod()
-                                .AllowAnyHeader();
-                        });
-                });
-
                 // Authorization
                 builder.Services.AddAuthorization();
                 builder.Services.AddOpenApi();
 
-                // ========== CONSTRUIR LA APLICACIÓN ==========
+                // CONSTRUIR LA APLICACIÓN
                 var app = builder.Build();
 
-                // ========== CONFIGURAR PIPELINE (DESPUÉS DE builder.Build()) ==========
-
+                // CONFIGURAR PIPELINE
                 if (app.Environment.IsDevelopment())
                 {
                     app.MapOpenApi();
@@ -90,11 +74,17 @@ namespace Bisoft.Consultorio.Api
                 app.UseHttpsRedirection();
                 app.UseAuthorization();
                 app.UseCors("AllowAll");
+
+                // OpenAPI
                 app.UseSwagger();
                 app.UseSwaggerUI();
 
                 app.UseMiddleware<ErrorHandlerMiddleware>();
 
+                // CORS
+                app.UseCors(CORS_POLICY_NAME);
+
+                app.AddHealthChecks(Program.RATE_LIMITER_POLICY_NAME);
                 // Mapear endpoints
                 app.MapEndpoints();
 

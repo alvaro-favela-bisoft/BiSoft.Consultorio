@@ -13,6 +13,7 @@
             group.MapsConsultarPacientesEndpoint();
             group.MapActualizarPacientesEndpoint();
             group.MapEliminarPacientesEndpoint();
+            group.MapRestaurarPacientesEndpoint();
             return group;
         }
     }

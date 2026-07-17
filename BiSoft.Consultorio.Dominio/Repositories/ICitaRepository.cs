@@ -11,8 +11,10 @@ namespace BiSoft.Consultorio.Dominio.Repositories
         Task<Cita?> ObtenerCita(Guid citaId);
         Task<List<Cita>> ObtenerCitasPorSalaYFecha(Guid salaId, DateTime fecha);
         Task<List<Cita>> ObtenerCitasPorDoctorYFecha(Guid doctorId, DateTime fecha);
+        Task<List<Cita>> ObtenerCitasEliminadas();
         Task ActualizarCita(Cita cita);
         Task EliminarCita(Cita cita);
+        Task RestaurarCita(Cita cita);
         Task GuardarCambios();
     }
 }

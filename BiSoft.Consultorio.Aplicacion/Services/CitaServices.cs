@@ -56,5 +56,10 @@ namespace BiSoft.Consultorio.Aplicacion.Services
                 Motivo = cita.Motivo
             };
         }
+
+        public async Task<object?> RestaurarCita(Guid id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

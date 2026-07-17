@@ -13,6 +13,7 @@
             group.MapRegistrarDoctoresEndpoint();
             group.MapActualizarDoctoresEndpoint();
             group.MapEliminarDoctoresEndpoint();
+            group.MapRestaurarDoctoresEndpoint();
             return group;
         }
     }

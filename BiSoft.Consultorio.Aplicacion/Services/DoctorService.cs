@@ -39,5 +39,12 @@ namespace BiSoft.Consultorio.Aplicacion.Services
         {
             await _doctorDomainService.EliminarDoctor(doctorId);
         }
+        public async Task<ConsultarDoctorResponse> RestaurarDoctor(Guid doctorId)
+        {
+            await _doctorDomainService.RestaurarDoctor(doctorId);
+            var doctor = await _doctorDomainService.ObtenerDoctor(doctorId);
+            _logger.LogInformation("Doctor restaurado: {DoctorId}", doctorId);
+            return doctor.Adapt<ConsultarDoctorResponse>();
+        }
     }
 }

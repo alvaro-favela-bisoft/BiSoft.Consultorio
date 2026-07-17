@@ -25,10 +25,7 @@ namespace BiSoft.Consultorio.Dominio.Services
             _logger.LogInformation("Doctor registrado: {DoctorNombre}, Especialidad: {DoctorEspecialidad}", doctor.Nombre, doctor.Especialidad);
             return doctor;
         }
-        public async Task<Doctor> ActualizarDoctor(
-            Guid doctorId, 
-            string nombre, 
-            string especialidad)
+        public async Task<Doctor> ActualizarDoctor(Guid doctorId, string nombre, string especialidad)
         {
             var doctor = await ObtenerDoctor(doctorId);
             doctor.Actualizar(nombre, especialidad);
@@ -54,6 +51,17 @@ namespace BiSoft.Consultorio.Dominio.Services
             await _doctorRepository.EliminarDoctor(doctor);
             await _doctorRepository.GuardarCambios();
             _logger.LogInformation("Doctor eliminado: {DoctorId}", doctorId);
+        }
+        public async Task RestaurarDoctor(Guid doctorId)
+        {
+            // RESTAURAR - usar IgnoreQueryFilters
+            var doctoresEliminados = await _doctorRepository.ObtenerDoctoresEliminados();
+            var doctor = doctoresEliminados.FirstOrDefault(d => d.Id == doctorId)
+                ?? throw new KeyNotFoundException($"No se encontró doctor eliminado con id {doctorId}");
+
+            await _doctorRepository.RestaurarDoctor(doctor);
+            await _doctorRepository.GuardarCambios();
+            _logger.LogInformation("Doctor restaurado: {DoctorId}", doctorId);
         }
     }
 }

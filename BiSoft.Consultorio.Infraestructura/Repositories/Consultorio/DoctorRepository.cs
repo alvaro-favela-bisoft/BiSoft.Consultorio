@@ -2,32 +2,34 @@
 using BiSoft.Consultorio.Dominio.Repositories;
 using BiSoft.Consultorio.Infraestructura.Contexts;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
+
 
 namespace BiSoft.Consultorio.Infraestructura.Repositories.Consultorio
 {
     public class DoctorRepository : IDoctorRepository
     {
         private readonly ConsultorioContext _context;
+
         public DoctorRepository(ConsultorioContext context)
         {
             _context = context;
         }
         public IQueryable<Doctor?> ConsultarDoctor()
         {
-            return _context.Doctores.AsQueryable();
+            return _context.Doctores;
         }
-
-        public Task GuardarCambios()
-        {
-            return _context.SaveChangesAsync();
-        }
-
         public async Task<Doctor?> ObtenerDoctor(Guid doctorId)
         {
-            return await _context.Doctores.OrderBy( d => d.Id ).FirstOrDefaultAsync(d => d.Id == doctorId);
+            return await _context.Doctores
+                .FirstOrDefaultAsync(d => d.Id == doctorId);
+        }
+
+        public async Task<List<Doctor>> ObtenerDoctoresEliminados()
+        {
+            return await _context.Doctores
+                .IgnoreQueryFilters()  // IGNORA FILTRO GLOBAL
+                .Where(d => d.IsDeleted)
+                .ToListAsync();
         }
 
         public Task RegistrarDoctor(Doctor doctor)
@@ -35,10 +37,27 @@ namespace BiSoft.Consultorio.Infraestructura.Repositories.Consultorio
             _context.Doctores.Add(doctor);
             return Task.CompletedTask;
         }
+
         public Task EliminarDoctor(Doctor doctor)
         {
-            _context.Doctores.Remove(doctor);
+            // SOFT DELETE
+            doctor.Eliminar();
+            _context.Doctores.Update(doctor);
             return Task.CompletedTask;
         }
+
+        public Task RestaurarDoctor(Doctor doctor)
+        {
+            // RESTAURAR
+            doctor.Restaurar();
+            _context.Doctores.Update(doctor);
+            return Task.CompletedTask;
+        }
+
+        public Task GuardarCambios()
+        {
+            return _context.SaveChangesAsync();
+        }
+
     }
 }

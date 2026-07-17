@@ -3,6 +3,7 @@ using BiSoft.Consultorio.Dominio.Repositories;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BiSoft.Consultorio.Dominio.Services
@@ -50,6 +51,16 @@ namespace BiSoft.Consultorio.Dominio.Services
             await _salaRepository.EliminarSala(sala);
             await _salaRepository.GuardarCambios();
             _logger.LogInformation("Sala eliminada: {SalaId}", salaId);
+        }
+        public async Task RestaurarSala(Guid salaId)
+        {
+            var salasEliminadas = await _salaRepository.ObtenerSalasEliminadas();
+            var sala = salasEliminadas.FirstOrDefault(s => s.Id == salaId)
+                ?? throw new KeyNotFoundException($"No se encontró sala eliminada con id {salaId}");
+
+            await _salaRepository.RestaurarSala(sala);
+            await _salaRepository.GuardarCambios();
+            _logger.LogInformation("Sala restaurada: {SalaId}", salaId);
         }
     }
 }

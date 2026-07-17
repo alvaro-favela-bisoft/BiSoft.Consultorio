@@ -100,5 +100,15 @@ namespace BiSoft.Consultorio.Dominio.Services
             await _citaRepository.GuardarCambios();
             _logger.LogInformation("Cita eliminada: {CitaId}", citaId);
         }
+        public async Task RestaurarCita(Guid citaId)
+        {
+            var citasEliminadas = await _citaRepository.ObtenerCitasEliminadas();
+            var cita = citasEliminadas.FirstOrDefault(c => c.Id == citaId)
+                ?? throw new KeyNotFoundException($"No se encontró cita eliminada con id {citaId}");
+
+            await _citaRepository.RestaurarCita(cita);
+            await _citaRepository.GuardarCambios();
+            _logger.LogInformation("Cita restaurada: {CitaId}", citaId);
+        }
     }
 }

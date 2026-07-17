@@ -27,6 +27,20 @@ namespace BiSoft.Consultorio.Infraestructura.Mapping.Consultorio.Sqlite
                 .HasColumnType("TEXT")
                 .HasMaxLength(100)
                 .IsRequired();
+
+            // SOFT DELETE
+            builder.Property(d => d.IsDeleted)
+                .HasColumnName("IsDeleted")
+                .HasColumnType("INTEGER")
+                .HasDefaultValue(false)
+                .IsRequired();
+
+            builder.Property(d => d.DeletedAt)
+                .HasColumnName("DeletedAt")
+                .HasColumnType("TEXT");
+
+            // FILTRO GLOBAL (excluir eliminados)
+            builder.HasQueryFilter(d => !d.IsDeleted);
         }
     }
 }

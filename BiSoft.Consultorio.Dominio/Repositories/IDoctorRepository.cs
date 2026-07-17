@@ -12,6 +12,8 @@ namespace BiSoft.Consultorio.Dominio.Repositories
         Task RegistrarDoctor(Doctor doctor);
         Task GuardarCambios();
         Task<Doctor?> ObtenerDoctor(Guid doctorId);
+        Task<List<Doctor>> ObtenerDoctoresEliminados();
+        Task RestaurarDoctor(Doctor doctor);
         IQueryable<Doctor?> ConsultarDoctor();
         Task EliminarDoctor(Doctor doctor);
     }

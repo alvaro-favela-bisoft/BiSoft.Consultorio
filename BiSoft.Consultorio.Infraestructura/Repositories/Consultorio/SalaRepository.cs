@@ -25,6 +25,13 @@ namespace BiSoft.Consultorio.Infraestructura.Repositories.Consultorio
         {
             return await _context.Salas.FirstOrDefaultAsync(s => s.Id == salaId);
         }
+        public async Task<List<Sala>> ObtenerSalasEliminadas()
+        {
+            return await _context.Salas
+                .IgnoreQueryFilters()
+                .Where(s => s.IsDeleted)
+                .ToListAsync();
+        }
 
         public Task ActualizarSala(Sala sala)
         {
@@ -34,10 +41,16 @@ namespace BiSoft.Consultorio.Infraestructura.Repositories.Consultorio
 
         public Task EliminarSala(Sala sala)
         {
-            _context.Salas.Remove(sala);
+            sala.Eliminar();
+            _context.Salas.Update(sala);
             return Task.CompletedTask;
         }
-
+        public Task RestaurarSala(Sala sala)
+        {
+            sala.Restaurar();
+            _context.Salas.Update(sala);
+            return Task.CompletedTask;
+        }
         public Task GuardarCambios()
         {
             return _context.SaveChangesAsync();

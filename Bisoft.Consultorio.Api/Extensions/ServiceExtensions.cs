@@ -4,9 +4,12 @@ using BiSoft.Consultorio.Dominio.Repositories;
 using BiSoft.Consultorio.Dominio.Services;
 using BiSoft.Consultorio.Infraestructura.Contexts;
 using BiSoft.Consultorio.Infraestructura.Repositories.Consultorio;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Threading.RateLimiting;
@@ -93,8 +96,40 @@ namespace Bisoft.Consultorio.Api.Extensions
                     options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
                     options.QueueLimit = 0;
                 });
-            });       
+            });
             return services;
+        }
+        public static IServiceCollection ConfigureLogger(this IServiceCollection services)
+        {
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.SQLite(
+                    sqliteDbPath: "Logs/Logs.db",
+                    tableName: "Logs",
+                    restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information
+                )
+                .CreateLogger();
+            services.AddSerilog();
+            return services;
+        }
+        public static IServiceCollection ConfigureAuthentication(this IServiceCollection service)
+        {
+            service.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = "your-issuer",
+                        ValidAudience = "your-audience",
+                        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("your-secret-key")),
+                        ClockSkew = TimeSpan.Zero
+                    };
+                });
+            return service;
         }
     }
 }

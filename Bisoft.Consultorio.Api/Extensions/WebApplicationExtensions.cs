@@ -16,6 +16,7 @@ namespace Bisoft.Consultorio.Api.Extensions
             apiEndpoints.MapPacientesEndpoints();
             apiEndpoints.MapSalasEndpoints();
             apiEndpoints.MapCitasEndpoints();
+            apiEndpoints.RequireRateLimiting(Program.RATE_LIMITER_POLICY_NAME);
 
             return app;
         }

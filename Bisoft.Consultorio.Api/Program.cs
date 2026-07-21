@@ -1,5 +1,6 @@
 using Bisoft.Consultorio.Api.DTOs.Paciente;
 using Bisoft.Consultorio.Api.Extensions;
+using Bisoft.Consultorio.Api.Extensions.Endpoints;
 using Bisoft.Consultorio.Api.Middlewares;
 using BiSoft.Consultorio.Aplicacion.Services;
 using BiSoft.Consultorio.Dominio.Repositories;
@@ -22,37 +23,28 @@ namespace Bisoft.Consultorio.Api
             try
             {
                 var builder = WebApplication.CreateBuilder(args);
-                var connectionString = builder.Configuration["DatabaseConnections:Consultorio:ConnectionStrings"];
-                if (string.IsNullOrWhiteSpace(connectionString))
+                var configuration = builder.Configuration.GetGeneralConfigurations();
 
-                {
-
-                    throw new InvalidOperationException("SQLite connection string is not configured. Check appsettings.json for DatabaseConnections:Consultorio:ConnectionString.");
-
-                }
+                builder.Services.AddSingleton(configuration.JWT);
                 builder.Services.InyectarServicios()
-                       .InyectarContextos(connectionString)
+                       .InyectarContextos(configuration.ConnectionString)
                        .ConfigurarSwagger()
                        .ConfigurarCors()
-                       .ConfugurarHealthChecks(connectionString);
+                       .ConfugurarHealthChecks(configuration.ConnectionString)
+                       .ConfigureRateLimiter(configuration.RateLimit)
+                       .ConfigureLogger()
+                       .ConfigureAuthentication(configuration.JWT);
 
                 // ====================
 
 
                 // DbContext
-                builder.Services.AddDbContext<ConsultorioContext>(
-                    options => options.UseSqlite(connectionString)
-                );
+                /*builder.Services.AddDbContext<ConsultorioContext>(
+                    options => options.UseSqlite(configuration)
+                );*/
 
                 // Logging
-                Log.Logger = new LoggerConfiguration()
-                    .MinimumLevel.Debug()
-                    .WriteTo.SQLite(
-                        sqliteDbPath: "Logs/Logs.db",
-                        tableName: "Logs",
-                        restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information
-                    )
-                    .CreateLogger();
+                
 
                 // API Documentation
                 builder.Services.AddEndpointsApiExplorer();
@@ -60,6 +52,7 @@ namespace Bisoft.Consultorio.Api
 
                 // Authorization
                 builder.Services.AddAuthorization();
+                builder.Services.AddAuthentication();
                 builder.Services.AddOpenApi();
 
                 // CONSTRUIR LA APLICACIÓN

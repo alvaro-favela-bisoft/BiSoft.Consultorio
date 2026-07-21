@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.RateLimiting;
 
-namespace Bisoft.Consultorio.Api.Extensions
+namespace Bisoft.Consultorio.Api.Extensions.Endpoints
 {
     public static class HealthChecksMapping
     {

@@ -1,4 +1,5 @@
-﻿using Bisoft.Consultorio.Api.Helpers.HealthCheck;
+﻿using Bisoft.Consultorio.Api.DTOs.Configurations;
+using Bisoft.Consultorio.Api.Helpers.HealthCheck;
 using BiSoft.Consultorio.Aplicacion.Services;
 using BiSoft.Consultorio.Dominio.Repositories;
 using BiSoft.Consultorio.Dominio.Services;
@@ -108,11 +109,12 @@ namespace Bisoft.Consultorio.Api.Extensions
                     tableName: "Logs",
                     restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information
                 )
+                .WriteTo.Console()
                 .CreateLogger();
             services.AddSerilog();
             return services;
         }
-        public static IServiceCollection ConfigureAuthentication(this IServiceCollection service)
+        public static IServiceCollection ConfigureAuthentication(this IServiceCollection service, JwtConfigurations jwtConfig)
         {
             service.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>

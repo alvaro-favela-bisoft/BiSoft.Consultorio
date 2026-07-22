@@ -3,6 +3,7 @@
     public record GeneralConfigurations
     (
         string ConnectionString,
+        string UsuariosConnectionString,
         int RateLimit,
         JwtConfigurations JWT
     );

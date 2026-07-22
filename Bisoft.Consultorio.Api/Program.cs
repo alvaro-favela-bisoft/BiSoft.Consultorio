@@ -27,7 +27,7 @@ namespace Bisoft.Consultorio.Api
 
                 builder.Services.AddSingleton(configuration.JWT);
                 builder.Services.InyectarServicios()
-                       .InyectarContextos(configuration.ConnectionString)
+                       .InyectarContextos(configuration.ConnectionString, configuration.UsuariosConnectionString)
                        .ConfigurarSwagger()
                        .ConfigurarCors()
                        .ConfugurarHealthChecks(configuration.ConnectionString)
@@ -52,7 +52,6 @@ namespace Bisoft.Consultorio.Api
 
                 // Authorization
                 builder.Services.AddAuthorization();
-                builder.Services.AddAuthentication();
                 builder.Services.AddOpenApi();
 
                 // CONSTRUIR LA APLICACIÓN
@@ -64,9 +63,10 @@ namespace Bisoft.Consultorio.Api
                     app.MapOpenApi();
                 }
 
-                app.UseHttpsRedirection();
-                app.UseAuthorization();
                 app.UseCors("AllowAll");
+                app.UseHttpsRedirection();
+                app.UseAuthentication();
+                app.UseAuthorization();
 
                 // OpenAPI
                 app.UseSwagger();

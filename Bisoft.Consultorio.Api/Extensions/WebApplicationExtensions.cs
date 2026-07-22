@@ -3,6 +3,7 @@ using Bisoft.Consultorio.Api.Endpoints.Doctores;
 using Bisoft.Consultorio.Api.Endpoints.Pacientes;
 using Bisoft.Consultorio.Api.Endpoints.Salas;
 using Bisoft.Consultorio.Api.Endpoints.Security;
+using Bisoft.Consultorio.Api.Endpoints.Usuarios;
 using Microsoft.OpenApi;
 
 namespace Bisoft.Consultorio.Api.Extensions
@@ -20,6 +21,7 @@ namespace Bisoft.Consultorio.Api.Extensions
             apiEndpoints.MapPacientesEndpoints();
             apiEndpoints.MapSalasEndpoints();
             apiEndpoints.MapCitasEndpoints();
+            apiEndpoints.MapUsuariosEndpoints();
             apiEndpoints.MapSecurityEndpoints();
 
             return app;

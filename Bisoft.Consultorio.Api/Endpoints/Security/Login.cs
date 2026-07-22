@@ -18,7 +18,7 @@ namespace Bisoft.Consultorio.Api.Endpoints.Security
         private const string PASSWORD = "SuperSecreta123";
         public static RouteGroupBuilder MapLogin(this RouteGroupBuilder group)
         {
-            group.MapGet("login", [AllowAnonymous]
+            group.MapPost("login", [AllowAnonymous]
                 async (
                     JwtConfigurations jwtConfiguration,
                     [FromBody] LoginRequest request,
@@ -34,7 +34,7 @@ namespace Bisoft.Consultorio.Api.Endpoints.Security
                         var tokenOptions = new JwtSecurityToken(
                             issuer: jwtConfiguration.Issuer,
                             audience: jwtConfiguration.Audience,
-                            expires: DateTime.Now.AddMinutes(15),
+                            expires: DateTime.Now.AddMinutes(jwtConfiguration.ExpirationMinutes),
                             signingCredentials: credential,
                             claims: new List<Claim>()
                             );
@@ -43,7 +43,7 @@ namespace Bisoft.Consultorio.Api.Endpoints.Security
                         return Results.Ok(new LoginResponse {Token = token});
                     }
             )
-            .Produces<ConsultarDoctorResponse>(StatusCodes.Status200OK)
+            .Produces<LoginResponse>(StatusCodes.Status200OK)
             .WithDescription("Permite iniciar sesion.")
             .WithSummary(ENDPOINT_NAME)
             .WithName(ENDPOINT_NAME);

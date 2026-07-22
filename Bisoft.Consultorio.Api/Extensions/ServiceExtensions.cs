@@ -5,6 +5,7 @@ using BiSoft.Consultorio.Dominio.Repositories;
 using BiSoft.Consultorio.Dominio.Services;
 using BiSoft.Consultorio.Infraestructura.Contexts;
 using BiSoft.Consultorio.Infraestructura.Repositories.Consultorio;
+using BiSoft.Consultorio.Infraestructura.Repositories.Usuarios;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,6 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Globalization;
-using System.Runtime.CompilerServices;
 using System.Threading.RateLimiting;
 
 namespace Bisoft.Consultorio.Api.Extensions
@@ -41,13 +41,18 @@ namespace Bisoft.Consultorio.Api.Extensions
             services.AddScoped<CitaDomainService>();
             services.AddScoped<ICitaRepository, CitaRepository>();
 
+            // Usuarios
+            services.AddScoped<UsuarioService>();
+            services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+
             return services;
         }
-        public static IServiceCollection InyectarContextos(this IServiceCollection services, string connectionString)
+        public static IServiceCollection InyectarContextos(this IServiceCollection services, string consultorioConnectionString, string usuariosConnectionString)
         {
-            services.AddDbContext<ConsultorioContext>(
-                options => options.UseSqlite(connectionString)
-                );
+            services.AddDbContext<ConsultorioContext>(options => options.UseSqlite(consultorioConnectionString));
+
+            services.AddDbContext<UsuariosContext>(options => options.UseSqlite(usuariosConnectionString));
+
             return services;
         }
         public static IServiceCollection ConfigurarSwagger(this IServiceCollection services)
@@ -125,12 +130,17 @@ namespace Bisoft.Consultorio.Api.Extensions
                         ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer = "your-issuer",
-                        ValidAudience = "your-audience",
-                        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("your-secret-key")),
+
+                        ValidIssuer = jwtConfig.Issuer,
+                        ValidAudience = jwtConfig.Audience,
+
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            System.Text.Encoding.UTF8.GetBytes(jwtConfig.SecretKey)),
+
                         ClockSkew = TimeSpan.Zero
                     };
                 });
+
             return service;
         }
     }

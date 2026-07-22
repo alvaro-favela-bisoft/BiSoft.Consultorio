@@ -10,7 +10,7 @@ namespace Bisoft.Consultorio.Api.Endpoints.Usuarios
 
         public static RouteGroupBuilder MapActualizarUsuarioEndpoint(this RouteGroupBuilder group)
         {
-            group.MapPut("{usuarioId}",
+            group.MapPut("{usuarioId}", 
                 async (
                     Guid usuarioId,
                     [FromBody] ActualizarUsuarioRequest request,

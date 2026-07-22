@@ -1,5 +1,6 @@
 ﻿using BiSoft.Consultorio.Aplicacion.DTOs.Usuario;
 using BiSoft.Consultorio.Aplicacion.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bisoft.Consultorio.Api.Endpoints.Usuarios
@@ -10,8 +11,8 @@ namespace Bisoft.Consultorio.Api.Endpoints.Usuarios
 
         public static RouteGroupBuilder MapRegistrarUsuarioEndpoint(this RouteGroupBuilder group)
         {
-            group.MapPost("",
-                async (
+            group.MapPost("", [AllowAnonymous]
+            async (
                     [FromBody] RegistrarUsuarioRequest request,
                     UsuarioService usuarioService) =>
                 {

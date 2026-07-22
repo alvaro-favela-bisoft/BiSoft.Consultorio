@@ -78,6 +78,10 @@ namespace Bisoft.Consultorio.Api
                 app.UseCors(CORS_POLICY_NAME);
 
                 app.AddHealthChecks(Program.RATE_LIMITER_POLICY_NAME);
+
+                app.UseDefaultFiles();
+                app.UseStaticFiles();
+
                 // Mapear endpoints
                 app.MapEndpoints();
 

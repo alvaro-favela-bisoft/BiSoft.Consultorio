@@ -77,5 +77,20 @@ namespace BiSoft.Consultorio.Aplicacion.Services
 
             await _usuarioRepository.EliminarUsuario(usuarioId);
         }
+        public async Task<Usuario?> ValidarUsuario(string usuarioLogin, string password)
+        {
+            var usuario = await _usuarioRepository.ObtenerUsuario(usuarioLogin);
+
+            if (usuario == null)
+                return null;
+
+            bool passwordCorrecto =
+                BCrypt.Net.BCrypt.Verify(password, usuario.PasswordHash);
+
+            if (!passwordCorrecto)
+                return null;
+
+            return usuario;
+        }
     }
 }

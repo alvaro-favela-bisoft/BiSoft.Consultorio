@@ -1,6 +1,7 @@
 ﻿using Bisoft.Consultorio.Api.DTOs.Configurations;
 using Bisoft.Consultorio.Api.DTOs.Security;
 using BiSoft.Consultorio.Aplicacion.DTOs.Doctor;
+using BiSoft.Consultorio.Aplicacion.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -14,18 +15,25 @@ namespace Bisoft.Consultorio.Api.Endpoints.Security
     public static class Login
     {
         private const string ENDPOINT_NAME = "Login";
+        /*
         private const string USUARIO = "administrador";
         private const string PASSWORD = "SuperSecreta123";
+        */
         public static RouteGroupBuilder MapLogin(this RouteGroupBuilder group)
         {
             group.MapPost("login", [AllowAnonymous]
-                async (
+            async (
                     JwtConfigurations jwtConfiguration,
+                    UsuarioService usuarioService,
                     [FromBody] LoginRequest request,
                     CancellationToken ct
                     ) =>
                     {
-                        if (request.Usuario != USUARIO || request.Password != PASSWORD)
+                        var usuario = await usuarioService.ValidarUsuario(
+                        request.Usuario,
+                        request.Password);
+
+                        if (usuario == null)
                             return Results.Unauthorized();
 
                         var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfiguration.SecretKey));
